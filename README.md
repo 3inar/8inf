@@ -16,7 +16,7 @@ example `3 2 .-` will push the result `1` to the stack; not `-1`.
 * `.+` pops two numbers from the stack and pushes their sum
 * `.-` pops two numbers from the stack and pushes their difference
 * `.*` pops two numbers from the stack and pushes their multiple
-* `.\` pops two numbers from the stack and pushes the quotient of the second
+* `./` pops two numbers from the stack and pushes the quotient of the second
   divided by the first.
 * `.mod` pops two numbers from the stack and pushes the remainder of the second
   divided by the first.
