@@ -11,14 +11,17 @@ char *read_file(char *source_file) {
   FILE *f = fopen(source_file, "rb");
 
   // find length of file
-  fseek (f, 0, SEEK_END);
+  fseek(f, 0, SEEK_END);
   len = ftell (f);
-  fseek (f, 0, SEEK_SET);
+  fseek(f, 0, SEEK_SET);
 
   // allocate space, read file
-  buffer = malloc(len);
-  fread (buffer, 1, len, f);
-  fclose (f);
+  buffer = malloc(len+1);
+  fread(buffer, sizeof(char), len, f);
+  fclose(f);
+
+  // no terminating zero in your typical file; need to add it
+  buffer[len] = '\0';
 
   return buffer;
 }
@@ -90,7 +93,10 @@ char** load_program(char *src_file) {
       i++;
     }
 
-    token = end + 1;
+    // need this not to skip past the end of string marker by accident; could
+    // proably be solved more elegantly.
+    if (*end != '\0') token = end + 1;
+    else token = end;
   }
 
   free(buffer);
