@@ -200,9 +200,6 @@ char** load_program(char *src_file) {
 
   }
 
-
-  //TODO: Add the ability to be able to .cgot forward in the script
-
   free(buffer);
 
   return program;
