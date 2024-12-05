@@ -19,6 +19,13 @@ void stackdump(rts_t *st) {
   }
 }
 
+// helper function that prints out the program
+void programdump(char **prog) {
+  for (char **pc = prog; *pc != NULL; pc++) {
+    printf("program[%i]: %s\n", (int) (pc - program), *pc);
+  }
+}
+
 int main(int argc, char **argv) {
 
   if (argc < 2) {
@@ -32,9 +39,7 @@ int main(int argc, char **argv) {
 
   // prints out the words in the program array; uncomment to get an idea of how
   // the program is stored in memory.
-  // for (char **pc = program; *pc != NULL; pc++) {
-  //   printf("program[%i]: %s\n", (int) (pc - program), *pc);
-  // }
+  // programdump(program);
 
   stack = stack_init();
 
