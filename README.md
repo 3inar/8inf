@@ -46,7 +46,7 @@ example `3 2 .-` will push the result `1` to the stack; not `-1`.
   number `-3` indicates that the program should jump three tokens back. If the
   program for instance is `... 5 6 .* 1 -3 .cjump` we will jump back to the
   token `.*`.
-* `.cgoto` `a --` works like `.cjump` but instead of counting how many words/tokens to go back you can just specify a label prefaced by a `#`. E.g. `loop .cgoto` will go to the label `#loop`. Technically a preprocessor directive that gets translated to a `.cjump` so the stack diagram is a little inaccurate.
+* `.cgoto` `a b --` works like `.cjump` but instead of counting how many words/tokens to go back you can just specify a label prefaced by a `#`. E.g. `1 loop .cgoto` will go to the label `#loop`. Technically a preprocessor directive that gets translated to a `.cjump` so the stack diagram is a little inaccurate.
 
 ### I/O operations
 * `.print` `a --` pop an item from the stack and print it to terminal
