@@ -35,24 +35,24 @@ void strip_newlines(char *str) {
 
 // replace all (comments) with spaces
 void strip_comments(char *str) {
-	int par_count = 0;
-	char is_string = 0;
+  int par_count = 0;
+  char is_string = 0;
   for (char *pt = str; *pt != '\0'; pt++) {
-		if(*pt == '~'){
-			is_string^=0b1;
-		}
-		if(!is_string){
-			if (*pt == '(') {
-				par_count++;
-			} else if(*pt == ')'){
-				par_count--;
-				*pt = ' ';
-			}
-		}
-		if(par_count != 0){
-			*pt = ' ';
-		}
-	}
+    if(*pt == '~'){
+      is_string^=0b1;
+    }
+    if(!is_string){
+      if (*pt == '(') {
+        par_count++;
+      } else if(*pt == ')'){
+        par_count--;
+        *pt = ' ';
+      }
+    }
+    if(par_count != 0){
+      *pt = ' ';
+    }
+  }
 }
 
 char** load_program(char *src_file) {
@@ -61,142 +61,142 @@ char** load_program(char *src_file) {
 
   char *buffer = read_file(src_file);
 
-	label_t* labeles;
-	int labelec = 0;
-	int* gotos;
-	int gotosc = 0;
+  label_t* labeles;
+  int labelec = 0;
+  int* gotos;
+  int gotosc = 0;
 
   // preprocessing
   strip_newlines(buffer);
   strip_comments(buffer);
-	
-	//Need better system for this, maybe a Enum
-	char reading = 0;
-	char reading_str = 0;
-	char reading_label = 0;
+  
+  //Need better system for this, maybe a Enum
+  char reading = 0;
+  char reading_str = 0;
+  char reading_label = 0;
 
-	int start;
-	int i = 0;
-	int token_count = 0;
-	
+  int start;
+  int i = 0;
+  int token_count = 0;
+  
   while(buffer[i] != '\0'){
-		if(!reading && buffer[i] != ' '){
-			reading = 1;
-			start = i;
-			if(buffer[i] == '~') reading_str=1;
-			if(buffer[i] == '#') reading_label=1;
+    if(!reading && buffer[i] != ' '){
+      reading = 1;
+      start = i;
+      if(buffer[i] == '~') reading_str=1;
+      if(buffer[i] == '#') reading_label=1;
 
-			i++;
-			continue;
-		}
+      i++;
+      continue;
+    }
 
-		if(reading && ((buffer[i] == ' ' && !reading_str) || (buffer[i] == '~' && reading_str))){
-			//Gets the positon of last character
-			int end;
-			if(reading_str){
-				end = i+1;
-			}else{
-				end = i;
-			}
-			
-			//Finds and stores where the label are located
-			if(reading_label){
-				labelec++;
+    if(reading && ((buffer[i] == ' ' && !reading_str) || (buffer[i] == '~' && reading_str))){
+      //Gets the positon of last character
+      int end;
+      if(reading_str){
+        end = i+1;
+      }else{
+        end = i;
+      }
+      
+      //Finds and stores where the label are located
+      if(reading_label){
+        labelec++;
 
-				//Make new label
-				label_t label;
-				label.pos = token_count+1;
-				label.label_name = calloc(end-start, sizeof(char));
-				memcpy(label.label_name, buffer+start+1, end-start-1);
-				label.label_name[end-start+1] = '\0';
-				
-				//Allocates more space for the labels
-				if(labelec == 1){
-					labeles = malloc(sizeof(label_t));
-				} else{
-					labeles = realloc(labeles, labelec*sizeof(label_t));
-				}
-				
-				//Stores the label
-				labeles[labelec-1] = label;
+        //Make new label
+        label_t label;
+        label.pos = token_count+1;
+        label.label_name = calloc(end-start, sizeof(char));
+        memcpy(label.label_name, buffer+start+1, end-start-1);
+        label.label_name[end-start+1] = '\0';
+        
+        //Allocates more space for the labels
+        if(labelec == 1){
+          labeles = malloc(sizeof(label_t));
+        } else{
+          labeles = realloc(labeles, labelec*sizeof(label_t));
+        }
+        
+        //Stores the label
+        labeles[labelec-1] = label;
 
-				reading = 0;
-				reading_label = 0;
-				continue;
-			}
+        reading = 0;
+        reading_label = 0;
+        continue;
+      }
 
-			//Allocates space for the token
-			char* token = calloc(end-start+1, sizeof(char));
+      //Allocates space for the token
+      char* token = calloc(end-start+1, sizeof(char));
 
-			//Copies the right token to the newly allocated space
-			memcpy(token, buffer+start, end-start);
+      //Copies the right token to the newly allocated space
+      memcpy(token, buffer+start, end-start);
 
-			//Check if macro
-			if(!strcmp(token, ".cgoto")){
-				char found = 0;
-				//Finds the label in the label list
-				if(gotosc == 0){
-					gotos = calloc(++gotosc, sizeof(int));
-				}else{
-					gotos = realloc(gotos, ++gotosc*sizeof(int));
-				}
-				gotos[gotosc-1]=token_count;
+      //Check if macro
+      if(!strcmp(token, ".cgoto")){
+        char found = 0;
+        //Finds the label in the label list
+        if(gotosc == 0){
+          gotos = calloc(++gotosc, sizeof(int));
+        }else{
+          gotos = realloc(gotos, ++gotosc*sizeof(int));
+        }
+        gotos[gotosc-1]=token_count;
 
-			}
-			program[token_count] = token;
-			token_count++;
+      }
+      program[token_count] = token;
+      token_count++;
 
-			reading = 0;
-			reading_str = 0;
-			reading_label = 0;
-		}
+      reading = 0;
+      reading_str = 0;
+      reading_label = 0;
+    }
 
-		i++;
+    i++;
   }
 
   //Find and replace all .cgoto with .cjump
   for (int i = 0; i<gotosc; i++){
-	int token_count = gotos[i];
-	char found = 0;
-	for(int j = 0; j<labelec; j++){
-		if(!strcmp(labeles[j].label_name, program[token_count-1])){
-			//Calculates how many steps you need to go
-			int steps = token_count-labeles[j].pos;
-			
-			//Plus minus 1 bug fix, don't know why it happens :(
-			if(steps < 0) steps++;
+  int token_count = gotos[i];
+  char found = 0;
+  for(int j = 0; j<labelec; j++){
+    if(!strcmp(labeles[j].label_name, program[token_count-1])){
+      //Calculates how many steps you need to go
+      int steps = token_count-labeles[j].pos;
+      
+      //Plus minus 1 bug fix, don't know why it happens :(
+      if(steps < 0) steps++;
 
-			//Gets how many digits ther is
-			int n = steps;
-			int count = 0;
-			do{
-				n/=10;
-				count++;
-			}while(n != 0);
-			count++;
+      //Gets how many digits ther is
+      int n = steps;
+      int count = 0;
+      do{
+        n/=10;
+        count++;
+      } while(n != 0);
+      count++;
 
-			//Creates the tokens for number of steps
-			char* newToken = calloc(++count, sizeof(char));
-			sprintf(newToken, "%d",-steps);
+      //Creates the tokens for number of steps
+      char* newToken = calloc(++count, sizeof(char));
+      sprintf(newToken, "%d",-steps);
 
-			//Replaces the token .goto with the token .cjump
-			program[token_count] = realloc(program[token_count], sizeof(".cjump"));
+      //Replaces the token .goto with the token .cjump
+      program[token_count] = realloc(program[token_count], sizeof(".cjump"));
 
-			free(program[token_count]);
-			//Adds the token to the program
-			program[token_count-1] = newToken;
-			program[token_count] = ".cjump";
+      free(program[token_count]);
+      //Adds the token to the program
+      program[token_count-1] = newToken;
+      program[token_count] = ".cjump";
 
-			found = 1;
-			break;
-			
+      found = 1;
+      break;
+      
 
-		}
-	}
-	if(!found){
-		printf("\33[1;31mError:\33[0m Lable \"%s\" not found\n",program[token_count-1]);
-		exit(-1);
-	}
+    }
+  }
+  if(!found){
+    printf("\33[1;31mError:\33[0m Lable \"%s\" not found\n",program[token_count-1]);
+    exit(-1);
+  }
 
   }
 
