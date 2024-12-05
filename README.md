@@ -2,8 +2,9 @@
 * anything enclosed in `()` is a comment
 * anything enclosed in `~~` is a string
 * anything prefaced by `.` is an operation 
+* anything prefaced by `#` is a label name
 * anything else is an integer
-* tokens are separated by spaces or newlines; tabs are NOT SUPPORTED
+* words are separated by spaces or newlines; tabs are SUPPORTED
 
 ## Supported operations
 
@@ -45,6 +46,7 @@ example `3 2 .-` will push the result `1` to the stack; not `-1`.
   number `-3` indicates that the program should jump three tokens back. If the
   program for instance is `... 5 6 .* 1 -3 .cjump` we will jump back to the
   token `.*`.
+* `.cgoto` `a b --` works like `.cjump` but instead of counting how many words/tokens to go back you can just specify a label. E.g. `loop .cgoto` will go to the label `loop`
 
 ### I/O operations
 * `.print` `a --` pop an item from the stack and print it to terminal
