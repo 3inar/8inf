@@ -5,6 +5,9 @@ INC := inc/lexer_preprocessor.h inc/rts.h inc/handlers.h
 8inf: 8inf.c $(SRC) $(INC)
 	gcc $(FLAGS) -Iinc 8inf.c $(SRC) -o 8inf
 
+debug: 8inf.c $(SRC) $(INC)
+	gcc $(FLAGS) -g -Iinc 8inf.c $(SRC) -o 8inf
+
 clean:
 	rm 8inf
 

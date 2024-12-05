@@ -177,7 +177,7 @@ char** load_program(char *src_file) {
 
       //Creates the tokens for number of steps
       char* newToken = calloc(++count, sizeof(char));
-      sprintf(newToken, "%d",-steps);
+      sprintf(newToken, "%d",-steps-1);
 
       //Replaces the token .goto with the token .cjump
       program[token_count] = realloc(program[token_count], sizeof(".cjump"));
