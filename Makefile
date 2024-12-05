@@ -1,8 +1,5 @@
-# add your source files here:
-SRC := src/lexer_preprocessor.c 
-
-# add your header files here
-INC := inc/lexer_preprocessor.h 
+SRC := src/lexer_preprocessor.c src/rts.c src/handlers.c
+INC := inc/lexer_preprocessor.h inc/rts.h inc/handlers.h
 # FLAGS := -g
 
 8inf: 8inf.c $(SRC) $(INC)
